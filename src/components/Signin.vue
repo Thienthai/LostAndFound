@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs12 class="text-xs-center" mt-5>
-        <h1>Sign In</h1>
+      <v-flex xs12 class="text-xs-center" mt-25>
+        <h1>Sign Inar</h1>
       </v-flex>
       <v-flex xs12 sm6 offset-sm3 mt-3>
         <form @submit.prevent="userSignIn">
@@ -24,7 +24,7 @@
             <v-flex>
               <v-text-field
                 name="password"
-                label="Password"
+                label="Passwords"
                 id="password"
                 type="password"
                 v-model="password"

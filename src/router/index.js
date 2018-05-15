@@ -6,6 +6,8 @@ import Landing from '@/components/Landing'
 // import NotFound from '@/components/NotFound'
 import Signup from '@/components/Signup'
 import Signin from '@/components/Signin'
+import Post from '@/components/Post'
+import Mypost from '@/components/Mypost'
 
 Vue.use(Router)
 
@@ -40,6 +42,18 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: '/post',
+      name: 'Post',
+      component: Post,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: '/mypost',
+      name: 'Mypost',
+      component: Mypost,
       beforeEnter: AuthGuard
     }
     // {

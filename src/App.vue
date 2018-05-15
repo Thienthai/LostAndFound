@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="sidebar" app>
       <v-list>
         <v-list-tile
-          v-for="item in menuItems"
+          v-for="item in sidebarItems"
           :key="item.title"
           :to="item.path">
           <v-list-tile-action>
@@ -11,27 +11,20 @@
           </v-list-tile-action>
           <v-list-tile-content>{{ item.title }}</v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="userSignOut" v-if="isAuthenticated">
-          <v-list-tile-action>
-            <v-icon>exit_to_app</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>Sign Out</v-list-tile-content>
-        </v-list-tile>
+        <v-divider></v-divider>
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar app>
-      <span class="hidden-sm-and-up">
-        <v-toolbar-side-icon @click="sidebar = !sidebar">
-        </v-toolbar-side-icon>
-      </span>
+    <v-toolbar app color="indigo" dark>
+      <v-toolbar-side-icon v-if="this.isAuthenticated === true" @click="sidebar = !sidebar"></v-toolbar-side-icon>
+      <v-toolbar-side-icon v-else v-bind:style="{ display: 'none' }"></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">
           {{ appTitle }}
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
+      <v-toolbar-items>
         <v-btn
           flat
           v-for="item in menuItems"
@@ -80,6 +73,32 @@
             { title: 'Sign Up', path: '/signup', icon: 'face' },
             { title: 'Sign In', path: '/signin', icon: 'lock_open' }
           ]
+        }
+      },
+      sidebarItems () {
+        if (this.isAuthenticated) {
+          if (this.$store.state.user.email === 'surkessone@gmail.com') {
+            return [
+              {
+                title: 'Post',
+                path: '/post',
+                icon: 'assignment'
+              }
+            ]
+          } else {
+            return [
+              {
+                title: 'Post',
+                path: '/post',
+                icon: 'assignment'
+              },
+              {
+                title: 'My Post',
+                path: '/mypost',
+                icon: 'assignment_ind'
+              }
+            ]
+          }
         }
       }
     },

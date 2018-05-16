@@ -22,10 +22,10 @@
                       <span style="font-weight:bold">Phone:</span> {{ item.phone }} 
                       <span style="font-weight:bold">Line:</span> {{ item.line}}
                     </div>
+                  <v-card-actions>
+                    <v-btn  @click.stop="item.dialog = true" flat color="blue">more info</v-btn>
+                  </v-card-actions>
                   </v-flex>
-                <v-card-actions>
-                  <v-btn  @click.stop="item.dialog = true" flat color="blue">more info</v-btn>
-                </v-card-actions>
                       <v-dialog v-model="item.dialog" max-width="500px">
                         <v-card>
                             <v-carousel delimiter-icon="stop" prev-icon="mdi-arrow-left" next-icon="mdi-arrow-right">

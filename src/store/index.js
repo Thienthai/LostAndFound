@@ -13,6 +13,7 @@ export const store = new Vuex.Store({
     loading: false,
     post: [
       {
+        email: 'gege@gmail.com',
         dialog: false,
         name: 'Mobile',
         brand: 'Iphone',
@@ -35,6 +36,7 @@ export const store = new Vuex.Store({
         description: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of'
       },
       {
+        email: 'bobo@gmail.com',
         dialog: false,
         name: 'Umbrellas',
         brand: 'Unknown',

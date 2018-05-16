@@ -7,12 +7,14 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
+    storeRef: firebase.storage(),
     appTitle: 'My Awesome App',
     user: null,
     error: null,
     loading: false,
     post: [
       {
+        id: 0,
         email: 'gege@gmail.com',
         dialog: false,
         name: 'Mobile',
@@ -36,6 +38,7 @@ export const store = new Vuex.Store({
         description: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of'
       },
       {
+        id: 1,
         email: 'bobo@gmail.com',
         dialog: false,
         name: 'Umbrellas',
@@ -69,7 +72,10 @@ export const store = new Vuex.Store({
     },
     setLoading (state, payload) {
       state.loading = payload
-    }
+    },
+    setPost (state, payload) {
+      state.post.push(payload)
+    },
   },
   actions: {
     userSignUp ({commit}, payload) {
@@ -106,6 +112,11 @@ export const store = new Vuex.Store({
       firebase.auth().signOut()
       commit('setUser', null)
       router.push('/')
+    },
+    postInfo ({commit}, payload) {
+      console.log(payload)
+      commit('setPost', payload)
+      router.push('/mypost')
     }
   },
   getters: {

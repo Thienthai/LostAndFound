@@ -3,6 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 class="text-xs-center" mt-25>
         <h1>Mypost</h1>
+        <h1>{{ result }}</h1>
         <br />
       </v-flex>
        <!-- mypost item list -->
@@ -26,7 +27,7 @@
                   </v-flex>
                 <v-card-actions>
                   <v-btn  @click.stop="item.dialog = true" flat color="blue">more info</v-btn>
-                  <v-btn  @click.stop="item.dialog = true" flat color="red">delete</v-btn>
+                  <v-btn  @click.stop="removeElement(item.id)" flat color="red">delete</v-btn>
                 </v-card-actions>
                       <v-dialog v-model="item.dialog" max-width="500px">
                         <v-card>
@@ -35,9 +36,11 @@
                           </v-carousel>
                           <v-card-title>
                             <span class="headline">Description</span>
+                            <div>
                             <span class="body-2">
                               {{ item.description }}
                             </span>
+                            </div>
                             <v-spacer></v-spacer>
                           </v-card-title>
                           <v-card-actions>
@@ -70,48 +73,56 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex xs12>
+              <form v-model="valid" ref="form"lazy-validation>
+              <v-flex xs12 sm6 md4>
+                <v-text-field v-model="name" label="Name" required></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
-                <v-text-field label="Name" required></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Brand"></v-text-field>
+                <v-text-field v-model="brand" label="Brand"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
                 <v-text-field
                   label="Found At"
+                  v-model="found"
                   persistent-hint
                   required
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Line"></v-text-field>
+                <v-text-field v-model="line" label="Line"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Phone"></v-text-field>
+                <v-text-field v-model="phone" label="Phone"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm3>
-                                  <v-text-field :mask="mask" label="Date" hint="example: 04/04/2018" persistent-hint></v-text-field
-                ></v-select>
+              <v-flex xs12 sm4>
+                                  <v-text-field v-model="date" :rules="dateRules" label="Date" hint="example: DD/MM/YYYY" persistent-hint></v-text-field
+                >
               </v-flex>
               <v-flex xs12>
-                <v-text-field
-                  :rules="[(v) => v.length <= 50 || 'Max 50 characters']"
+                <v-text-field :rules="[(v) => v.length <= 50 || 'Max 50 characters']"
                   :counter="50"
                   v-model="description"
                   label="Description"
                 ></v-text-field>
               </v-flex>
+              <div>
+              <small>*Pictures Maximum 3</small>
+              </div>
+              <v-spacer></v-spacer>
+              <input type="file" @change="onFileChange" id="fileButton1" value="upload"/>
+              <input type="file" @change="onFileChange" id="fileButton2" value="upload"/>
+              <input type="file" @change="onFileChange" id="fileButton3" value="upload"/>
+                <v-spacer></v-spacer>
+              <br />
+              <div>
+                <v-btn :disabled="!valid" color="blue darken-1" flat @click="Submit">Submit</v-btn>
+                <v-btn color="red darken-1" flat @click.native="dialog = false">Close</v-btn>
+              </div>
+              </form>
             </v-layout>
           </v-container>
-          <small>*provide information as much as possible</small>
+          <small>*Please provide information as much as possible</small>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="dialog = false">Save</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- the form to post -->
@@ -123,11 +134,82 @@
   export default {
     data () {
       return {
+        result: null,
+        pic: [],
+        fileList: [],
+        storeRef: this.$store.state.storeRef,
+        valid: true,
         itemPost: this.$store.state.post,
         user: this.$store.state.user.email,
         dialog: false,
-        mask: '##/##/####'
+        dateRules: [
+          v => /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/.test(v) || 'Date must be valid'
+        ]
       }
+    },
+    methods: {
+      onFileChange (e) {
+        var files = e.target.files[0]
+        //this.fileList.push(files)
+        console.log(this.fileList.length)
+        var storageRef = this.storeRef.ref('file/' + files.name)
+          var task = storageRef.put(files)
+          task.on('state_changed', function progress(snapshot) {
+            var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+            console.log(percentage)
+
+          }, function error(err) {
+             console.log(err)
+          }, () => {
+             console.log("complete")
+              this.storeRef.ref().child('file/' + files.name).getDownloadURL().then((url) => {
+                    this.pic.push({src:url})
+             })
+        })
+      },
+      Submit () {
+        // for (var i = 0; i < this.fileList.length;i++){
+        //   var storageRef = this.storeRef.ref('file/' + this.fileList[i].name)
+        //   var task = storageRef.put(this.fileList[i])
+        //   task.on('state_changed', function progress(snapshot) {
+        //     var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+        //     console.log(percentage)
+
+        //   }, function error(err) {
+        //      console.log(err)
+        //   },function complete() {
+        //      console.log("complete")
+        //      this.storeRef.ref().child('file/asphalt-blue-sky-clouds-490411.jpg').getDownloadURL().then(function(url) {
+        //             this.pic.push({src:url})
+        //      })
+
+        //   })
+        // }
+        this.dialog = false
+        this.$store.dispatch('postInfo', { 
+          name: this.name, 
+          brand: this.brand,
+          found: this.found,
+          line: this.line,
+          phone: this.phone,
+          date: this.date,
+          description: this.description,
+          pic: this.pic,
+          dialog: false,
+          email: this.user,
+          status: 'not found',
+          id: this.itemPost.length
+        })
+      },
+      removeElement : function(index){
+          this.itemPost.splice(index, 1);
+      }
+    },
+    created () {
+      // this.result = storeRef.ref().child('file').child('react-firebase-auth-7a60f.appspot.com').fullPath
+      // this.storeRef.ref().child('file/asphalt-blue-sky-clouds-490411.jpg').getDownloadURL().then(function(url) {
+      //   alert(url)
+      // })
     }
   }
 </script>

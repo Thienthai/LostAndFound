@@ -19,8 +19,22 @@
         <p>Brand: {{ item.brand }}</p>
         <p>Found at: {{ item.found }}</p>
         <p>Date: {{ item.date }}</p>
+
+           <!--  dialog moreinfo -->
+    <v-dialog v-model="dialog2" max-width="500px">
+                        <v-card>
+                            <v-carousel delimiter-icon="stop" prev-icon="mdi-arrow-left" next-icon="mdi-arrow-right">
+                            <v-carousel-item v-for="(items,i) in item.pic" :src="items.src" :key="i"></v-carousel-item>
+                          </v-carousel>
+                          <v-card-actions>
+                            <v-btn color="primary" flat @click="dialog2=false">Close</v-btn>
+                          </v-card-actions>
+                        </v-card>
+    </v-dialog>
+    <!--  dialog moreinfo -->
+
         </div>
-        <v-btn color="info">Info</v-btn>
+        <v-btn @click.stop="dialog2 = true" color="info">More Pictures</v-btn>
         <v-btn color="error" @click="removeElement(item.index)">Delete</v-btn>
       </v-card>
         <br />
@@ -111,8 +125,21 @@
         <p>Brand: {{ item.brand }}</p>
         <p>Found at: {{ item.found }}</p>
         <p>Date: {{ item.date }}</p>
+    <!--  dialog moreinfo -->
+    <v-dialog v-model="dialog2" max-width="500px">
+                        <v-card>
+                            <v-carousel delimiter-icon="stop" prev-icon="mdi-arrow-left" next-icon="mdi-arrow-right">
+                            <v-carousel-item v-for="(items,i) in item.pic" :src="items.src" :key="i"></v-carousel-item>
+                          </v-carousel>
+                          <v-card-actions>
+                            <v-btn color="primary" flat @click="dialog2=false">Close</v-btn>
+                          </v-card-actions>
+                        </v-card>
+    </v-dialog>
+    <!--  dialog moreinfo -->
+
         </div>
-        <v-btn color="info">Info</v-btn>
+        <v-btn @click.stop="dialog2 = true"  color="info">More Pictures</v-btn>
       </v-card>
         <br />
       </div>
@@ -128,6 +155,7 @@ export default {
       db: this.$store.state.db,
       auth: this.$store.state.auth,
       dialog: false,
+      dialog2: false,
       pic: [],
       storeRef: this.$store.state.storeRef,
       user: this.$store.state.user.email,
@@ -185,28 +213,39 @@ export default {
           date: this.date,
           pic: this.pic
         })
-        this.db.ref('home/all').set({
-          id: uid,
+        // var forgotPush = this.db.ref('home/all').push()
+        // forgotPush.set({
+        //   name: this.name,
+        //   brand: this.brand,
+        //   found: this.found,
+        //   date: this.date,
+        //   pic: this.pic
+        // })
+        var data = {
           name: this.name,
           brand: this.brand,
           found: this.found,
           date: this.date,
           pic: this.pic
-        })
+        }
+        var forgotRef = this.db.ref('home/all').push()
+        forgotRef.set(data)
       }
   },
   created () {
         var ref = this.db.ref('home/all')
-        ref.on('value',snapshot => {
-          console.log(snapshot.val())
-          this.forgot.push(snapshot.val())
-          var a = []
-          a.push(snapshot.val())
-          this.forgot = a
-        },error => {
-          console.log(error.code)
-          //return snapshot.error.code
-        })
+        // ref.on('value',snapshot => {
+        //   console.log(snapshot.val())
+        //   if(snapshot.val() != null){
+        //     this.forgot.push(snapshot.val())
+        //     var a = []
+        //     a.push(snapshot.val())
+        //     this.forgot = a
+        //   }
+        // },error => {
+        //   console.log(error.code)
+        //   //return snapshot.error.code
+        // })
   }
 }
 </script>

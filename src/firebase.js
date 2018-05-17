@@ -1,12 +1,12 @@
 import firebase from 'firebase'
 
 const config = {
-  apiKey: 'AIzaSyCr4Iv-vwRfNxmI57da5ZUSEAQ3-XOaZEY',
-  authDomain: 'react-firebase-auth-7a60f.firebaseapp.com',
-  databaseURL: 'https://react-firebase-auth-7a60f.firebaseio.com',
-  projectId: 'react-firebase-auth-7a60f',
-  storageBucket: 'react-firebase-auth-7a60f.appspot.com',
-  messagingSenderId: '1004900662845'
+    apiKey: "AIzaSyBsPIoiIPBJEosXMhhu-Wt0EiO18VKBlfA",
+    authDomain: "lostandfound-e813f.firebaseapp.com",
+    databaseURL: "https://lostandfound-e813f.firebaseio.com",
+    projectId: "lostandfound-e813f",
+    storageBucket: "lostandfound-e813f.appspot.com",
+    messagingSenderId: "922329102297"
 }
 
 firebase.initializeApp(config)

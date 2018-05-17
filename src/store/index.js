@@ -8,10 +8,13 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     storeRef: firebase.storage(),
+    auth: firebase.auth(),
+    db: firebase.database(),
     appTitle: 'My Awesome App',
     user: null,
     error: null,
     loading: false,
+    forgot: [],
     post: [
       {
         id: 0,

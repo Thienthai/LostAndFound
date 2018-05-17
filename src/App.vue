@@ -80,6 +80,11 @@
           if (this.$store.state.user.email === 'surkessone@gmail.com') {
             return [
               {
+                title: 'Home',
+                path: '/home',
+                icon: 'home'
+              },
+              {
                 title: 'Post',
                 path: '/post',
                 icon: 'assignment'
@@ -87,6 +92,11 @@
             ]
           } else {
             return [
+              {
+                title: 'Home',
+                path: '/home',
+                icon: 'home'
+              },
               {
                 title: 'Post',
                 path: '/post',

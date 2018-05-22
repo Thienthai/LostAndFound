@@ -30,6 +30,7 @@
                 v-model="password"
                 required></v-text-field>
             </v-flex>
+            <small style="color:Tomato;">*admin mode --> Username: admin@mail.com Pasword: 123456</small>
             <v-flex class="text-xs-center" mt-5>
               <v-btn color="primary" type="submit">Sign In</v-btn>
             </v-flex>

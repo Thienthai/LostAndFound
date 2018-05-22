@@ -78,7 +78,7 @@ export const store = new Vuex.Store({
     },
     setPost (state, payload) {
       state.post.push(payload)
-    },
+    }
   },
   actions: {
     userSignUp ({commit}, payload) {

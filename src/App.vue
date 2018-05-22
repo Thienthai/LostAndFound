@@ -77,7 +77,7 @@
       },
       sidebarItems () {
         if (this.isAuthenticated) {
-          if (this.$store.state.user.email === 'surkessone@gmail.com') {
+          if (this.$store.state.user.email === 'admin@mail.com') {
             return [
               {
                 title: 'Home',

@@ -6,7 +6,7 @@
         <br />
       </v-flex>
       <v-flex xs10 offset-xs1 mt-25>
-        <div v-for="item in this.$store.state.post">
+        <div v-for="item in itemPost">
         <v-card>
             <v-container fluid>
                 <v-layout row wrap v-bind="binding">
@@ -57,6 +57,8 @@
   export default {
     data () {
       return {
+        db: this.$store.state.db,
+        auth: this.$store.state.auth,
         dialog3: false,
         items: [
           {
@@ -68,7 +70,8 @@
           {
             src: 'https://images7.alphacoders.com/411/thumb-1920-411820.jpg'
           }
-        ]
+        ],
+        itemPost: []
       }
     },
     computed: {
@@ -79,6 +82,15 @@
 
         return binding
       }
+    },
+    created () {
+      var db = this.db
+      var auth = this.auth
+      db.ref('post').on('child_added', snapshot => {
+        db.ref('post/' + snapshot.key).on('child_added', snapshot => {
+             this.itemPost.push(snapshot.val())
+        })
+      })
     }
   }
 </script>

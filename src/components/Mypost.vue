@@ -27,7 +27,7 @@
                   </v-flex>
                 <v-card-actions>
                   <v-btn  @click.stop="item.dialog = true" flat color="blue">more info</v-btn>
-                  <v-btn  @click.stop="removeElement(item.id)" flat color="red">delete</v-btn>
+                  <v-btn  @click.stop="removeElement(item.path)" flat color="red">delete</v-btn>
                 </v-card-actions>
                       <v-dialog v-model="item.dialog" max-width="500px">
                         <v-card>
@@ -134,12 +134,14 @@
   export default {
     data () {
       return {
+        db: this.$store.state.db,
+        auth: this.$store.state.auth,
         result: null,
         pic: [],
         fileList: [],
         storeRef: this.$store.state.storeRef,
         valid: true,
-        itemPost: this.$store.state.post,
+        itemPost: [],
         user: this.$store.state.user.email,
         dialog: false,
         dateRules: [
@@ -161,13 +163,19 @@
           }, function error(err) {
              console.log(err)
           }, () => {
-             console.log("complete")
-              this.storeRef.ref().child('file/' + files.name).getDownloadURL().then((url) => {
-                    this.pic.push({src:url})
-             })
-        })
+            this.storeRef.ref().child('file/' + files.name).getDownloadURL().then((url) => {
+                    this.pic.push(
+                      { 
+                        src:url 
+                      }
+                    )
+            })
+          })
       },
       Submit () {
+        var db = this.db
+        var auth = this.auth
+        const uid = auth.currentUser.uid
         // for (var i = 0; i < this.fileList.length;i++){
         //   var storageRef = this.storeRef.ref('file/' + this.fileList[i].name)
         //   var task = storageRef.put(this.fileList[i])
@@ -185,9 +193,25 @@
 
         //   })
         // }
-        this.dialog = false
-        this.$store.dispatch('postInfo', { 
-          name: this.name, 
+        // this.dialog = false
+        // this.$store.dispatch('postInfo', {
+        //   name: this.name,
+        //   brand: this.brand,
+        //   found: this.found,
+        //   line: this.line,
+        //   phone: this.phone,
+        //   date: this.date,
+        //   description: this.description,
+        //   pic: this.pic,
+        //   dialog: false,
+        //   email: this.user,
+        //   status: 'not found',
+        //   id: this.itemPost.length
+        // })
+
+        var itemRef = this.db.ref('post/' + uid).push()
+        itemRef.set({
+          name: this.name,
           brand: this.brand,
           found: this.found,
           line: this.line,
@@ -198,18 +222,34 @@
           dialog: false,
           email: this.user,
           status: 'not found',
-          id: this.itemPost.length
+          id: this.itemPost.length,
+          path: "post/" + uid + "/" + itemRef.key  
         })
+        this.dialog = false
+        location.reload()
       },
-      removeElement : function(index){
-          this.itemPost.splice(index, 1);
+      removeElement (path) {
+        var db = this.db
+        var auth = this.auth
+        const uid = auth.currentUser.uid
+        db.ref(path).remove()
+        this.itemPost = []
+        db.ref('post').on('child_added', snapshot => {
+          db.ref('post/' + snapshot.key).on('child_added', snapshot => {
+            console.log("added")
+            this.itemPost.push(snapshot.val())
+          })
+        })
       }
     },
     created () {
-      // this.result = storeRef.ref().child('file').child('react-firebase-auth-7a60f.appspot.com').fullPath
-      // this.storeRef.ref().child('file/asphalt-blue-sky-clouds-490411.jpg').getDownloadURL().then(function(url) {
-      //   alert(url)
-      // })
+      var db = this.db
+      var auth = this.auth
+      db.ref('post').on('child_added', snapshot => {
+        db.ref('post/' + snapshot.key).on('child_added', snapshot => {
+             this.itemPost.push(snapshot.val())
+        })
+      })
     }
   }
 </script>

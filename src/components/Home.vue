@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid v-if="user === 'surkessone@gmail.com'">
+  <v-container fluid v-if="user === 'admin@mail.com'">
     <v-layout row wrap>
       <v-flex xs12 class="text-xs-center" mt-5>
         <h1>Home page</h1>
@@ -8,11 +8,11 @@
         <p>This is a admin's home page.</p>
       </v-flex>
       <v-flex xs12>
-      <div v-for="item in forgot">
+      <div v-for="item in info">
       <v-card>
         <v-flex xs4>
         </v-card-media>
-        <img :src="item.pic[0].src" alt="Mountain View">
+        <img :src="picTest(item)" alt="Mountain View">
         </v-flex>
         <div>
         <h1 class="text-xs-center" >Name: {{ item.name }}</h1>
@@ -35,7 +35,7 @@
 
         </div>
         <v-btn @click.stop="dialog2 = true" color="info">More Pictures</v-btn>
-        <v-btn color="error" @click="removeElement(item.index)">Delete</v-btn>
+        <v-btn color="error" @click="remove(item.path)">Delete</v-btn>
       </v-card>
         <br />
       </div>
@@ -115,10 +115,10 @@
         <p>This is a user's home page.</p>
       </v-flex>
       <v-flex xs12>
-      <div v-for="item in forgot">
+      <div v-for="item in info">
       <v-card>
         <v-flex xs4>
-        <img :src="item.pic[0].src" alt="Mountain View">
+        <img :src="picTest(item)" alt="Mountain View">
         </v-flex>
         <div>
         <h1 class="text-xs-center" >Name: {{ item.name }}</h1>
@@ -159,26 +159,9 @@ export default {
       pic: [],
       storeRef: this.$store.state.storeRef,
       user: this.$store.state.user.email,
-      forgot: []
+      forgot: [],
+      info: []
     }
-  },
-  computed: {
-      getdb () {
-        var ref = this.db.ref('home/all')
-        ref.on('value',snapshot => {
-          console.log(snapshot.val())
-          // this.forgot.push(snapshot.val())
-          var a = []
-          a = snapshot.val()
-          forgot = a
-        },error => {
-          console.log(error.code)
-          //return snapshot.error.code
-        })
-      },
-      test () {
-        console.log("moo")
-      }
   },
   methods: {
       removeElement : function(index){
@@ -205,47 +188,65 @@ export default {
         })
       },
       Submit () {
-        this.dialog = false,
-        this.forgot.push({
-          name: this.name,
-          brand: this.brand,
-          found: this.found,
-          date: this.date,
-          pic: this.pic
-        })
-        // var forgotPush = this.db.ref('home/all').push()
-        // forgotPush.set({
-        //   name: this.name,
-        //   brand: this.brand,
-        //   found: this.found,
-        //   date: this.date,
-        //   pic: this.pic
-        // })
-        var data = {
-          name: this.name,
-          brand: this.brand,
-          found: this.found,
-          date: this.date,
-          pic: this.pic
+          this.dialog = false
+          var db = this.db
+          var auth = this.auth
+          const uid = auth.currentUser.uid
+      //   this.forgot.push({
+      //     name: this.name,
+      //     brand: this.brand,
+      //     found: this.found,
+      //     date: this.date,
+      //     pic: this.pic
+      //   })
+      //   // var forgotPush = this.db.ref('home/all').push()
+      //   // forgotPush.set({
+      //   //   name: this.name,
+      //   //   brand: this.brand,
+      //   //   found: this.found,
+      //   //   date: this.date,
+      //   //   pic: this.pic
+      //   // })
+          var forgotRef = this.db.ref('add/' + uid).push()
+          forgotRef.set({
+            name: this.name,
+            brand: this.brand,
+            found: this.found,
+            date: this.date,
+            pic: this.pic,
+            path: "add/" + uid + "/" + forgotRef.key  
+          })
+          location.reload()
+      },
+      picTest (item) {
+        if(item.pic.length === null){
+          return 0
+        }else{
+          return item.pic[0].src
         }
-        var forgotRef = this.db.ref('home/all').push()
-        forgotRef.set(data)
+      },
+      remove(path) {
+        var db = this.db
+        var auth = this.auth
+        const uid = auth.currentUser.uid
+        db.ref(path).remove()
+        this.info = []
+        db.ref('add').on('child_added', snapshot => {
+          db.ref('add/' + snapshot.key).on('child_added', snapshot => {
+            console.log("added")
+            this.info.push(snapshot.val())
+          })
+        })
       }
   },
   created () {
-        var ref = this.db.ref('home/all')
-        // ref.on('value',snapshot => {
-        //   console.log(snapshot.val())
-        //   if(snapshot.val() != null){
-        //     this.forgot.push(snapshot.val())
-        //     var a = []
-        //     a.push(snapshot.val())
-        //     this.forgot = a
-        //   }
-        // },error => {
-        //   console.log(error.code)
-        //   //return snapshot.error.code
-        // })
+      var db = this.db
+      var auth = this.auth
+      db.ref('add').on('child_added', snapshot => {
+        db.ref('add/' + snapshot.key).on('child_added', snapshot => {
+             this.info.push(snapshot.val())
+        })
+      })
   }
 }
 </script>

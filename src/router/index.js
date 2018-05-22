@@ -8,6 +8,7 @@ import Signup from '@/components/Signup'
 import Signin from '@/components/Signin'
 import Post from '@/components/Post'
 import Mypost from '@/components/Mypost'
+import test from '@/components/test'
 
 Vue.use(Router)
 
@@ -55,6 +56,11 @@ export default new Router({
       name: 'Mypost',
       component: Mypost,
       beforeEnter: AuthGuard
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test
     }
     // {
     //   path: '*',

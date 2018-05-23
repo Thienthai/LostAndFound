@@ -32,10 +32,10 @@
                             <v-carousel-item v-for="(items,i) in item.pic" :src="items.src" :key="i"></v-carousel-item>
                           </v-carousel>
                           <v-card-title>
-                            <span class="headline">Description</span>
-                            <span class="body-2">
-                              {{ item.description }}
-                            </span>
+          <div>
+            <h3 class="headline mb-0">Description</h3>
+            <div>{{ item.description }}</div>
+          </div>
                             <v-spacer></v-spacer>
                           </v-card-title>
                           <v-card-actions>

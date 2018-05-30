@@ -1,18 +1,20 @@
 <template>
-  <v-container fluid>
+  <v-container grid-list-md fluid>
     <v-layout row wrap>
-      <v-flex xs12 class="text-xs-center" mt-25>
-        <h1>Sign In</h1>
-      </v-flex>
       <v-flex xs12 sm6 offset-sm3 mt-3>
+        <v-card height="430px">
+        <v-card-title>
+          <span class="headline">Sign In</span>
+        </v-card-title>
+        <v-card-text>
         <form @submit.prevent="userSignIn">
-          <v-layout column>
+          <v-layout wrap column>
             <v-flex>
               <v-alert type="error" dismissible v-model="alert">
                 {{ error }}
               </v-alert>
             </v-flex>
-            <v-flex>
+            <v-flex xs12 sm6 md4>
               <v-text-field
                 name="email"
                 label="Email"
@@ -21,7 +23,7 @@
                 v-model="email"
                 required></v-text-field>
             </v-flex>
-            <v-flex>
+            <v-flex xs12 sm6 md4>
               <v-text-field
                 name="password"
                 label="Passwords"
@@ -30,12 +32,14 @@
                 v-model="password"
                 required></v-text-field>
             </v-flex>
-            <small style="color:Tomato;">*admin mode --> Username: admin@mail.com Pasword: 123456</small>
+            <small style="color:Tomato;">*admin mode Username: admin@mail.com Pasword: 123456</small>
             <v-flex class="text-xs-center" mt-5>
               <v-btn color="primary" type="submit">Sign In</v-btn>
             </v-flex>
           </v-layout>
         </form>
+      </v-card-text>
+      </v-card>
       </v-flex>
     </v-layout>
   </v-container>

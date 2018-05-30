@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app dark>
     <v-navigation-drawer v-model="sidebar" app>
       <v-list>
         <v-list-tile
@@ -15,7 +15,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar app color="indigo" dark>
+    <v-toolbar app color="blue-grey darken-4" dark>
       <v-toolbar-side-icon v-if="this.isAuthenticated === true" @click="sidebar = !sidebar"></v-toolbar-side-icon>
       <v-toolbar-side-icon v-else v-bind:style="{ display: 'none' }"></v-toolbar-side-icon>
       <v-toolbar-title>
